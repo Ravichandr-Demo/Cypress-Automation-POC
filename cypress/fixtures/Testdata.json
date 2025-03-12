@@ -1,0 +1,21 @@
+{
+  "name":"ravichandra",
+  "email": "ravichandra.ak2022@gmail.com",
+  "password": "Ravi@1234",
+  "loginSuccessMessage":"Logged in as",
+  "invalidemail":"chandu@gmail.com",
+  "invalidpassword":"Rav@121",
+  "expecteErrorMessage":"Your email or password is incorrect!",
+  "expecteProductdName":"Men Tshirt",
+  "confirmationMessage":"Added!",
+  "productAddedMessage":"Your product has been added to cart.",
+  "cartEmptyMessage":"Cart is empty!",
+  "shirtText":"Men - Tshirts Products",
+  "subjectOfContactUs":"unable to login",
+  "UserMessage":"As a user unable to log in to the application",
+  "cardNumber":"4111111111111111",
+  "cvv":"123",
+  "expireDate":"03",
+  "expireYear":"30",
+  "cardHolder":"John Doe"
+}
