@@ -12,6 +12,7 @@ describe('Product search And Filtering', () => {
     })
 
     beforeEach('login',()=>{
+      // url redirect
               cy.visit("https://automationexercise.com/")
               loginPage.click_on_login_button()
               loginPage.enter_emailfield(userdata.email)
