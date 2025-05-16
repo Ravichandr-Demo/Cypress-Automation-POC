@@ -1,0 +1,229 @@
+BDD
+Behaviour Driven Development-closes the gap between business people and technical people by: 
+BDD encourages working in rapid iterations, continuously breaking down your user’s problems into
+small pieces that can flow through your development process as quickly as possible.
+
+Advantages:
+->Although documentation and automated tests are produced by a BDD team
+
+
+Feature file: Here we write the Features to be tested in Gherkin format i.e. Given When Then. We can even run the feature file to execute the test scripts written in the Stepdef file.
+Stepdef file: Once the Feature file is ready, each sentence of the Feature file can be further implemented over the Stepdef file.
+Runner File: This is just to execute the actual test script written over the Stepdef file by referring to the feature file. Apart from that, it has many other options for customization, 
+reporting, selective execution, etc.
+
+Cucumber Hooks
+These are the blocks of the code that runs before or after each scenario. So that we can define these, anywhere in our project. For Example, Step Definition.
+
+As per the definition, these are just two annotation @After and @Before. In the console, we can see the blocks getting executed and giving clear output. We can also execute the hooks for specific Tags.
+
+
+Cucumber Annotations
+These are inbuilt to Cucumber. Normally tags are @Given, @When, @Then.
+
+However, later if we need we can create our own annotation and then use it in our program. During execution, the matching glue code i.e. functions are written in a Stepdef file having @Given, @When, @Then will 
+get executed.
+
+
+ Cucumber Background
+These are steps or series of steps that are common to all the scenarios in the feature file.
+
+It allows us to add some context to the scenarios for a feature where it is defined. It runs before every scenario for a feature in which it is defined.
+
+
+Cucumber Data Tables
+Cucumber has the feature to support data-driven testing, which allows us to automatically run a test case multiple times with different input and validation values for a given script.
+
+Cucumber supports the data table. The first row is considered as the column and the rows next to it are the data for the scripts.
+
+
+
+
+
+
+
+
+Cucumber Tags
+These are normally used over the feature file to classify the scenarios over the feature files as per their given tag name. We can have multiple tags for a given scenario in the feature file.
+
+Tags are user-defined and we can give any name to it such as @Smoke, @Regression, etc.
+
+
+Cucumber Transpose
+This is a slight modification to the Cucumber data table. Here the first column would be considered as column and the columns next are considered as data for the scripts.
+
+
+Cucumber Multi Scenarios
+Cucumber allows us to perform testing multiple scenarios under one feature file.
+
+
+ Cucumber Reporting
+Unlike reporting and other third-party tools where we need to do some configuration to view the reporting.
+
+Here in Cucumber, we have built-in plugins such as pretty, JSON, HTML, XML which give us the comprehensive report of test execution.
+
+
+
+Creating Files For Cucumber
+
+Stepdef file– Src/test/java >> New >> Others >> Cucumber>>StepDef class.
+Feature file– Project>>New>>File>> specify name for the file with extension as ‘.feature’.
+Runner file– It is similar to any other Java class creation but we may require implementing some method here.
+
+
+Benefit of Page Object Model
+Code Reusability
+code readability
+code maintence
+
+
+
+Feature: I want to login into the site with valid and invalid data and search T-shirt
+
+Background:
+Given I navigate to the Website
+
+Scenario: Login as new sign up user with valid data
+When I entered valid crediential
+| email | validpassword |
+| qatubeupdate@yopmail.com | 12345 |
+When User click on sign in button
+Then Validate the title after login
+
+Scenario: Login as new sign up user with invalid data
+When I entered invalid crediential
+| email | invalidpassword |
+| qatubeupdate@yopmail.com | 123456 |
+When User click on sign in button
+Then Error message should display
+| errormessage |
+| Authentication failed |
+
+
+
+
+Feature: I want open the Site and verify links in Home Page
+
+Background:
+Given I navigate to the Website
+
+Scenario: Verify content in Home Page
+When I views links in Home Page of the Site 
+| HomePageLinks |
+| Contact us |
+| Sign in |
+| Women |
+| Popular |
+| Best Seller |
+| Cart |
+
+
+class LoginPage {
+enetURL() {
+cy.visit("http://automationpractice.com/");
+}
+enterUserNamePassword(username, password) {
+cy.contains("Sign in").click();
+cy.get("#email").clear();
+cy.get("#email").type(username);
+cy.get("#passwd").clear();
+cy.get("#passwd").type(password);
+return this;
+}
+clickOnSignInButton() {
+return cy.get("#SubmitLogin").click();
+}
+verifyPageTitle() {
+return cy.title().should("eq", "My account - My Store");
+}
+validateErrorMessage(errorMessage) {
+return cy.contains(errorMessage);
+}
+}
+
+const login = new LoginPage();
+export default login;
+
+
+
+class HomePage {
+searchItem(element) {
+cy.contains(element.HomePageLinks).should("be.visible");
+return this;
+}
+}
+const homepage = new HomePage();
+export default homepage;
+
+
+// Scenario 1 : Login with Valid crediential
+Given("I navigate to the Website", () => {
+cy.visit("http://automationpractice.com/");
+});
+When("I entered valid crediential", (datatable) => {
+datatable.hashes().forEach((element) => {
+login.enterUserNamePassword(element.email, element.validpassword);
+});
+});
+When("User click on sign in button", () => {
+login.clickOnSignInButton();
+});
+Then("Validate the title after login", () => {
+login.verifyPageTitle();
+});
+
+// Scenario 2 : Login with Invalid crediential and Verify error messsage
+When("I entered invalid crediential", (datatable) => {
+datatable.hashes().forEach((element) => {
+login.enterUserNamePassword(element.email, element.invalidpassword);
+});
+});
+When("User click on sign in button", () => {
+login.clickOnSignInButton();
+});
+Then("Error message should display", (datatable) => {
+datatable.hashes().forEach((element) => {
+login.validateErrorMessage(element.errormessage);
+});
+});
+
+
+
+
+import homePage from "../../Pages/HomePage/homePage";
+
+Given("I navigate to the Website", () => {
+cy.visit("http://automationpractice.com/");
+});
+When("I views links in Home Page of the Site", (datatable) => {
+datatable.hashes().forEach((element) => {
+homePage.searchItem(element);
+});
+});
+
+
+
+
+
+
+RUNNER file containes
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+features="Features",
+glue="com.Multi",
+plugin={"html:target/cucumber-html-report", "json:target/cucumber.json",
+ 
+"pretty:target/cucumber-pretty.txt","usage:target/cucumber-usage.json", "junit:target/cucumber-
+results.xml"},
+ 
+dryRun = false,
+monochrome = true,
+tags={"@Smoke,@Regression"}
+)
+ 
+public class Runner {
+ 
+}
+
+
